@@ -42,5 +42,25 @@ async function logout(){await db.auth.signOut();adminRole=null;showSurvey()}
 async function loadResults(){let {data,error}=await db.from('mustaqbalhum_responses').select('created_at,answers').order('created_at',{ascending:false}).limit(10000);if(error){status('تعذر تحميل النتائج: '+error.message);return}rows=data||[];$('count').textContent=rows.length;let root=$('results');root.replaceChildren();questions.forEach(q=>{let card=document.createElement('div');card.className='card';let h=document.createElement('h3');h.textContent=q.sort_order+'. '+q.question_text;card.append(h);if(q.question_type==='text'){let values=rows.map(r=>r.answers['q'+q.sort_order]).filter(Boolean);if(!values.length)card.append(document.createTextNode('لا توجد إجابات بعد'));values.forEach(v=>{let p=document.createElement('p');p.className='result-row';p.textContent='• '+v;card.append(p)})}else(q.options||[]).forEach(a=>{let n=rows.filter(r=>{let v=r.answers['q'+q.sort_order];return Array.isArray(v)?v.includes(a):v===a}).length;let pct=rows.length?Math.round(100*n/rows.length):0;let label=document.createElement('div');label.textContent=a+': '+n+' ('+pct+'%)';let bar=document.createElement('div');bar.className='bar';let fill=document.createElement('div');fill.className='fill';fill.style.width=pct+'%';bar.append(fill);card.append(label,bar)});root.append(card)})}
 function renderEditor(){let e=$('editor');e.replaceChildren();let h=document.createElement('h3');h.textContent='تعديل أسئلة الاستبيان';e.append(h);questions.forEach(q=>{let d=document.createElement('div');d.className='card';let label=document.createElement('label');label.textContent='السؤال '+q.sort_order;let input=document.createElement('textarea');input.value=q.question_text;input.style.height='70px';let ol=document.createElement('label');ol.textContent='الخيارات (كل خيار في سطر)';let opts=document.createElement('textarea');opts.value=(q.options||[]).join('\n');opts.disabled=q.question_type==='text';let btn=document.createElement('button');btn.textContent='حفظ التعديل';btn.onclick=async()=>{let {error}=await db.from('mustaqbalhum38_questions').update({prompt:input.value.trim(),options:q.question_type==='text'?[]:opts.value.split('\n').map(x=>x.trim()).filter(Boolean)}).eq('id',q.id);alert(error?'تعذر الحفظ: '+error.message:'تم حفظ التعديل');if(!error){await loadQuestions();renderEditor()}};d.append(label,input,ol,opts,btn);e.append(d)})}
 function exportCSV(){if(!adminRole)return;let cols=['التاريخ',...questions.map(q=>q.question_text)];let quote=x=>'"'+String(x??'').replaceAll('"','""')+'"';let lines=[cols.map(quote).join(',')];rows.forEach(r=>lines.push([r.created_at,...questions.map(q=>{let v=r.answers['q'+q.sort_order];return Array.isArray(v)?v.join(' | '):v})].map(quote).join(',')));let blob=new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='نتائج_مستقبلهم_38.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+  db.auth.onAuthStateChange(async (event) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    const newPassword = prompt('أدخلي كلمة المرور الجديدة (12 خانة على الأقل):');
+    if (!newPassword) return;
+    if (newPassword.length < 12) {
+      alert('كلمة المرور قصيرة. استخدمي 12 خانة على الأقل.');
+      return;
+    }
+    const { error } = await db.auth.updateUser({
+      password: newPassword
+    });
+    if (error) {
+      alert('تعذر تغيير كلمة المرور: ' + error.message);
+    } else {
+      alert('تم تغيير كلمة المرور بنجاح');
+      await db.auth.signOut();
+      location.href = location.pathname;
+    }
+  }
+});
 loadQuestions();if(location.hash.includes('access_token'))showAdmin();
 </script></body></html>
