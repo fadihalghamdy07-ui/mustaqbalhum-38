@@ -62,5 +62,150 @@ function exportCSV(){if(!adminRole)return;let cols=['التاريخ',...question
     }
   }
 });
+
+function makeReport() {
+  if (!adminRole) {
+    alert('يرجى دخول لوحة الإدارة أولاً');
+    return;
+  }
+
+  const old = document.getElementById('official-report');
+  if (old) old.remove();
+
+  const report = document.createElement('section');
+  report.id = 'official-report';
+
+  const css = document.createElement('style');
+  css.id = 'official-report-style';
+  css.textContent = `
+    #official-report {
+      background:white; color:#20354e;
+      padding:25px; direction:rtl;
+      font-family:Tahoma,Arial,sans-serif;
+    }
+    #official-report h1,#official-report h2 {
+      color:#173c62;
+    }
+    #official-report .report-card {
+      border:1px solid #d8c28b;
+      border-radius:12px; padding:18px;
+      margin:18px 0; break-inside:avoid;
+    }
+    #official-report .report-bar {
+      background:#e8eef3; height:18px;
+      border-radius:9px; overflow:hidden;
+      margin:7px 0 15px;
+    }
+    #official-report .report-fill {
+      background:#b69a58; height:100%;
+    }
+    @media print {
+      body > *:not(#official-report) {
+        display:none !important;
+      }
+      #official-report {
+        position:static; padding:10px;
+      }
+      #official-report .report-fill {
+        print-color-adjust:exact;
+        -webkit-print-color-adjust:exact;
+      }
+      @page { size:A4; margin:12mm; }
+    }
+  `;
+  document.getElementById('official-report-style')?.remove();
+  document.head.append(css);
+
+  const add = (parent, tag, value) => {
+    const e = document.createElement(tag);
+    e.textContent = value;
+    parent.append(e);
+    return e;
+  };
+
+  add(report,'h1','التقرير البياني والتحليلي');
+  add(report,'h2','استبيان مستقبلهم 38');
+  add(report,'p','المتوسطة الثامنة والثلاثون');
+  add(report,'p','مديرة المدرسة: نوال سعيد الأحمري');
+  add(report,'p','إعداد: فاديه الغامدي');
+  add(report,'h2','الملخص التنفيذي');
+  add(report,'p','إجمالي المشاركات: '+rows.length);
+  add(report,'p','تاريخ التقرير: '+new Date().toLocaleDateString('ar-SA'));
+
+  questions.forEach(q => {
+    const card = document.createElement('div');
+    card.className = 'report-card';
+    add(card,'h3',q.sort_order+'. '+q.question_text);
+
+    if(q.question_type === 'text') {
+      const answers = rows.map(r =>
+        r.answers?.['q'+q.sort_order]
+      ).filter(Boolean);
+
+      add(card,'p','عدد الإجابات النصية: '+answers.length);
+      answers.forEach(a => add(card,'p','• '+a));
+    } else {
+      const stats = (q.options||[]).map(option => {
+        const count = rows.filter(r => {
+          const v = r.answers?.['q'+q.sort_order];
+          return Array.isArray(v)
+            ? v.includes(option)
+            : v === option;
+        }).length;
+        return {option,count};
+      });
+
+      stats.forEach(s => {
+        const pct = rows.length
+          ? Math.round(s.count/rows.length*100)
+          : 0;
+
+        add(card,'p',
+          s.option+' — '+s.count+' مشاركة ('+pct+'٪)'
+        );
+
+        const bar = document.createElement('div');
+        bar.className = 'report-bar';
+        const fill = document.createElement('div');
+        fill.className = 'report-fill';
+        fill.style.width = pct+'%';
+        bar.append(fill);
+        card.append(bar);
+      });
+
+      if(rows.length && stats.length) {
+        const top = [...stats].sort(
+          (a,b) => b.count-a.count
+        )[0];
+
+        add(card,'p',
+          'التحليل: الخيار الأكثر اختيارًا هو «'+
+          top.option+'» بعدد '+top.count+
+          ' مشاركة. وتُفسَّر النتيجة في ضوء طبيعة السؤال.'
+        );
+      }
+    }
+    report.append(card);
+  });
+
+  const end = document.createElement('div');
+  end.className = 'report-card';
+  add(end,'h2','التوصيات التطويرية');
+  add(end,'p','تعزيز التواصل مع أولياء الأمور.');
+  add(end,'p','تقديم مواد تعريفية بخدمات تطبيق مستقبلهم.');
+  add(end,'p','متابعة مؤشرات الاستبيان دوريًا.');
+  add(end,'p','تحديد أولويات التحسين وفق النتائج الفعلية.');
+  report.append(end);
+
+  document.body.append(report);
+  window.print();
+  report.remove();
+}
+
+const reportButton = document.createElement('button');
+reportButton.textContent = '📊 التقرير البياني والتحليلي PDF';
+reportButton.onclick = makeReport;
+document.querySelector('#count').parentElement.append(reportButton);
+  
 loadQuestions();if(location.hash.includes('access_token'))showAdmin();
 </script></body></html>
