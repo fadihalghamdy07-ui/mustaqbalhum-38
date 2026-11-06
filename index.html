@@ -1,211 +1,41 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مستقبلهم | المتوسطة الثامنة والثلاثون</title><style>:root{font-family:Tahoma,Arial,sans-serif;color:#23334a;background:#f5f8fb}*{box-sizing:border-box}body{margin:0}header{background:linear-gradient(120deg,#133c63,#158c91);color:white;padding:36px 20px;text-align:center}header h1{font-size:32px;margin:14px 0}header p{margin:9px}main{max-width:830px;margin:25px auto;padding:0 16px}.card{background:white;padding:22px;margin:16px 0;border:1px solid #e1e9ef;border-radius:17px;box-shadow:0 3px 14px #122f4810}.q{font-weight:bold;margin-bottom:17px}label.choice{display:block;padding:10px;margin:7px 0;background:#f7fafc;border-radius:9px;cursor:pointer}input{accent-color:#148c91}textarea{width:100%;height:110px;padding:12px;border:1px solid #bfcbd5;border-radius:10px;font:inherit}button{border:0;background:#147f86;color:white;padding:13px 22px;border-radius:10px;font:inherit;cursor:pointer;margin:5px}button.secondary{background:#304a65}.muted{color:#66788a;font-size:13px}.error{color:#b32c36}.bar{height:13px;background:#e9f0f4;border-radius:20px;overflow:hidden;margin:5px 0 15px}.fill{height:100%;background:#168d94}footer{text-align:center;padding:20px;color:#526678}#admin{display:none}.stat{font-size:28px;font-weight:bold;color:#147f86}#success{display:none;text-align:center}small{font-size:12px}details{margin:12px 0}summary{cursor:pointer}.result-row{margin:10px 0}.admin-link{background:none;color:#56768c;text-decoration:underline;font-size:12px}.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap} @media print{button,.admin-link{display:none}header{color:#222;background:white}}input[type=email],input[type=text]{width:100%;padding:12px;border:1px solid #bfcbd5;border-radius:9px;font:inherit} .choice input{width:auto} .editline{margin:12px 0} .status{padding:12px;border-radius:8px;background:#edf6f6}</style></head><body><header><div>المتوسطة الثامنة والثلاثون | شراكة الأسرة والمدرسة</div><h1>معًا، نفتح آفاق مستقبلهم</h1><p>استبيان أولياء الأمور حول تطبيق «مستقبلهم»</p><p>مديرة المدرسة: نوال سعيد الأحمري</p><small>٣ دقائق تقريبًا · دون كتابة الاسم</small></header><main><section id="survey"><div class="card"><h2>ولي الأمر الكريم،</h2><p>لأن شراكتكم أساس في دعم مستقبل أبنائكم وبناتكم، يسلّط هذا الاستبيان الضوء على تطبيق «مستقبلهم» ومدى معرفتكم بخدماته وطريقة استخدامه والاستفادة منه.</p><p class="muted">تُستخدم الإجابات لأغراض التحسين، ولا نطلب الاسم أو بيانات التواصل.</p></div><form id="form"></form><div id="success" class="card"><h2>شكرًا لمشاركتكم 🌷</h2><p>تم إرسال إجابتك بنجاح إلى المدرسة.</p><button onclick="location.reload()">إجابة جديدة</button></div></section><section id="admin"><div class="card"><div class="top"><h2>لوحة إدارة نتائج الاستبيان</h2><button class="secondary" onclick="showSurvey()">العودة للاستبيان</button></div><p class="muted">النتائج محفوظة في قاعدة بيانات المدرسة ولا تظهر إلا لحساب الإدارة المصرح له.</p><div id="admin-status"></div><div id="editor"></div><p>إجمالي المشاركات</p><div class="stat" id="count">0</div><button onclick="exportCSV()">تصدير النتائج CSV</button><button class="secondary" onclick="window.print()">طباعة التقرير</button></div><div id="results"></div></section><div style="text-align:center"><button class="admin-link" onclick="showAdmin()">دخول إدارة المنصة</button></div></main><footer>المتوسطة الثامنة والثلاثون · مديرة المدرسة: نوال سعيد الأحمري<div style="display:block;margin-top:12px;font-weight:bold">إعداد المعلمة : فاديه الغامدي</div></footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script><script>
-const db=window.supabase.createClient('https://wptbsbmrsfdzbwfqzbvo.supabase.co','sb_publishable_oDsuvajZgeZsgMmWkcCzFw_vhWlPgQ8');
-let questions=[],rows=[],adminRole=null;
-const form=document.getElementById('form');
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مستقبلهم | المتوسطة الثامنة والثلاثون</title>
+<style>
+:root{font-family:Tahoma,Arial,sans-serif;color:#213650;background:#f3f7fb}*{box-sizing:border-box}body{margin:0}header{background:linear-gradient(120deg,#153b62,#0d8d91);color:white;text-align:center;padding:40px 18px}header h1{font-size:clamp(24px,5vw,38px);margin:14px 0}header p{margin:8px}main{max-width:1080px;margin:25px auto;padding:0 15px}.card{background:white;padding:22px;margin:16px 0;border:1px solid #dfe9f1;border-radius:18px;box-shadow:0 4px 18px #183a5a0b}.q{font-weight:bold;margin-bottom:16px}label.choice{display:block;background:#f5f9fb;border-radius:10px;margin:8px 0;padding:12px;cursor:pointer}.choice:has(input:checked){background:#e5f5f3;border:1px solid #0d8d91}input{accent-color:#138b90}input[type=email],input[type=password],input[type=text],textarea{width:100%;padding:12px;border:1px solid #c7d5df;border-radius:9px;font:inherit;margin:6px 0}textarea{min-height:95px}button{background:#117f87;color:white;border:0;border-radius:10px;padding:12px 18px;font:inherit;cursor:pointer;margin:5px}button.secondary{background:#304d6b}button.light{background:#eaf1f6;color:#24435d}button:disabled{opacity:.5;cursor:wait}.muted{color:#667a8b;font-size:13px}.status{padding:12px;border-radius:9px;background:#eef7f7;margin:10px 0;white-space:pre-wrap}.error{color:#b72e39}footer{text-align:center;padding:22px;color:#53677a}#admin,#success{display:none}.top,.actions{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.actions{justify-content:flex-start}.admin-link{background:none;color:#56768c;text-decoration:underline;font-size:12px}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px}.stat{font-size:32px;font-weight:bold;color:#117f87}.chart-row{display:grid;grid-template-columns:minmax(90px,1.4fr) minmax(110px,3fr) minmax(85px,1fr);align-items:center;gap:10px;margin:12px 0;font-size:14px}.track{height:22px;background:#e9f0f4;border-radius:20px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#0d8d91,#69c3bb);border-radius:20px}.pill{display:inline-block;background:#e6f4f3;color:#146a70;padding:5px 12px;border-radius:50px;font-size:12px}.report-title{text-align:center;border-bottom:2px solid #d9bd7d;padding-bottom:18px}.report-title h2{color:#173e65}.insight{background:#f2f8fa;padding:13px;border-right:4px solid #d1ad60;border-radius:8px}.report-question{break-inside:avoid;page-break-inside:avoid}.report-question h3{color:#214c70}.text-answer{padding:8px 12px;border-bottom:1px solid #e8edf0;white-space:pre-wrap;overflow-wrap:anywhere}.editor-item{border-top:1px solid #e3ebef;padding:15px 0}.hide{display:none!important}@media print{@page{size:A4;margin:13mm}body{background:white}header,footer,main>div:last-child,#survey,#admin,.no-print{display:none!important}main{max-width:none;margin:0;padding:0}#print-report{display:block!important}.card{box-shadow:none;border:1px solid #d9e1e7;break-inside:avoid;padding:15px;margin:12px 0}.fill{print-color-adjust:exact;-webkit-print-color-adjust:exact}.report-question{break-inside:avoid}h1,h2,h3{break-after:avoid}}
+</style></head><body>
+<header><div>المتوسطة الثامنة والثلاثون | شراكة الأسرة والمدرسة</div><h1>معًا، نفتح آفاق مستقبلهم</h1><p>استبيان أولياء الأمور حول تطبيق «مستقبلهم»</p><p>مديرة المدرسة: نوال سعيد الأحمري</p><small>٣ دقائق تقريبًا · دون كتابة الاسم</small></header>
+<main><section id="survey"><div class="card"><h2>ولي الأمر الكريم،</h2><p>لأن شراكتكم أساس في دعم مستقبل أبنائكم وبناتكم، يسلّط هذا الاستبيان الضوء على تطبيق «مستقبلهم» ومدى معرفتكم بخدماته وطريقة استخدامه والاستفادة منه.</p><p class="muted">تُستخدم الإجابات لأغراض التحسين، ولا نطلب الاسم أو بيانات التواصل.</p></div><form id="form"></form><div id="success" class="card"><h2>شكرًا لمشاركتكم 🌷</h2><p>تم إرسال إجابتك بنجاح إلى المدرسة.</p><button onclick="location.reload()">إجابة جديدة</button></div></section>
+<section id="admin"><div class="card"><div class="top"><h2>لوحة إدارة نتائج الاستبيان</h2><button class="secondary" onclick="showSurvey()">العودة للاستبيان</button></div><p class="muted">النتائج محفوظة في قاعدة البيانات ولا تظهر إلا للحساب الإداري المصرح له.</p><div id="admin-status" class="status"></div><div id="admin-content" class="hide"><div class="stats"><div class="card"><div class="muted">إجمالي المشاركات المحمّلة</div><div id="count" class="stat">0</div></div><div class="card"><div class="muted">عدد الأسئلة</div><div id="question-count" class="stat">0</div></div><div class="card"><div class="muted">آخر مشاركة</div><div id="last-date">—</div></div></div><div class="actions no-print"><button onclick="exportCSV()">تصدير Excel / CSV</button><button onclick="makeReport()">إنشاء التقرير التحليلي</button><button class="secondary" onclick="printReport()">حفظ التقرير PDF / طباعة</button><button class="light" onclick="loadResults()">تحديث النتائج</button><button class="light" onclick="logout()">تسجيل الخروج</button></div><p class="muted">لحفظ PDF: اضغطي «حفظ التقرير PDF / طباعة»، ثم اختاري «حفظ كـ PDF» من خيارات الطباعة في جهازك.</p><div id="results"></div><details id="editor-panel" class="hide"><summary>تعديل أسئلة الاستبيان (للمديرة فقط)</summary><div id="editor"></div></details></div></div></section>
+<div class="no-print" style="text-align:center"><button class="admin-link" onclick="showAdmin()">دخول إدارة المنصة</button></div><section id="print-report" class="hide"></section></main>
+<footer>المتوسطة الثامنة والثلاثون · مديرة المدرسة: نوال سعيد الأحمري<div style="margin-top:12px;font-weight:bold">إعداد المعلمة: فاديه الغامدي</div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script><script>
+'use strict';
+const SUPABASE_URL='https://wptbsbmrsfdzbwfqzbvo.supabase.co';
+const SUPABASE_KEY='sb_publishable_oDsuvajZgeZsgMmWkcCzFw_vhWlPgQ8';
+const ADMIN_EMAIL='fadihalghamdy07@gmail.com';
 const $=id=>document.getElementById(id);
-function status(t){$('admin-status').textContent=t}
-function renderSurvey(){form.replaceChildren();questions.filter(q=>q.active).forEach((q,i)=>{let d=document.createElement('div');d.className='card';let h=document.createElement('div');h.className='q';h.textContent=(i+1)+'. '+q.question_text;d.append(h);if(q.question_type==='text'){let t=document.createElement('textarea');t.name='q'+q.id;t.placeholder='إجابتك (اختياري)';d.append(t)}else (q.options||[]).forEach(a=>{let l=document.createElement('label');l.className='choice';let inp=document.createElement('input');inp.type=q.sort_order===8||q.sort_order===9?'checkbox':'radio';inp.name='q'+q.id;inp.value=a;l.append(inp,document.createTextNode(' '+a));d.append(l)});form.append(d)});let end=document.createElement('div');end.className='card';end.innerHTML='<p class="muted">المشاركة دون اسم أو بريد إلكتروني.</p><button type="submit" id="send">إرسال الإجابة</button>';form.append(end)}
-async function loadQuestions(){let {data,error}=await db.from('mustaqbalhum_questions').select('*').order('sort_order');if(error){form.textContent=error.message;return}questions=data;renderSurvey()}
-form.addEventListener('submit',async e=>{e.preventDefault();let answers={};for(let q of questions.filter(x=>x.active)){if(q.question_type==='text'){answers['q'+q.sort_order]=form.querySelector('[name=q'+q.id+']').value.trim().slice(0,3000)}else{let selected=[...form.querySelectorAll('[name=q'+q.id+']:checked')].map(x=>x.value);if(!selected.length){alert('يرجى الإجابة عن السؤال: '+q.question_text);return}answers['q'+q.sort_order]=q.sort_order===8||q.sort_order===9?selected:selected[0]}}let b=$('send');b.disabled=true;b.textContent='جارٍ الإرسال...';let {error}=await db.from('mustaqbalhum_responses').insert({answers});b.disabled=false;b.textContent='إرسال الإجابة';if(error){alert('تعذر الإرسال، يرجى المحاولة مجددًا.');return}form.style.display='none';$('success').style.display='block';window.scrollTo(0,0)});
-function showSurvey(){$('admin').style.display='none';$('survey').style.display='block'}
-async function showAdmin(){$('survey').style.display='none';$('admin').style.display='block';let {data:{user}}=await db.auth.getUser();if(!user){$('results').replaceChildren();$('editor').replaceChildren();$('count').textContent='—';$('admin-status').innerHTML='<p>تسجيل الدخول للإدارة فقط</p><input type="email" id="email" placeholder="البريد الإلكتروني" value="Fadihalghamdy07@gmail.com"><button onclick="login()">إرسال رابط الدخول إلى البريد</button>';return}let {data:a}=await db.from('mustaqbalhum38_admins').select('role').eq('user_id',user.id).maybeSingle();if(!a){status('تم تسجيل الدخول، لكن لم تُفعّل صلاحية الإدارة لهذا الحساب بعد. يرجى التواصل لإكمال التفعيل.');return}adminRole=a.role;status('تم تسجيل الدخول كمديرة المنصة · '+user.email);$('admin-status').insertAdjacentHTML('beforeend',' <button class="secondary" onclick="logout()">تسجيل الخروج</button>');await loadResults();if(adminRole==='owner')renderEditor()}
-async function login(){let email=$('email').value.trim();if(email.toLowerCase()!=='fadihalghamdy07@gmail.com'){alert('هذا البريد غير مخصص للإدارة');return}let {error}=await db.auth.signInWithOtp({email,options:{emailRedirectTo:location.href.split('#')[0]}});status(error?'تعذر إرسال رابط الدخول: '+error.message:'تحققي من بريدك الإلكتروني واضغطي رابط تسجيل الدخول.')}
-const oldShowAdmin = showAdmin;
-showAdmin = async function() {
-  await oldShowAdmin();
-  if (document.getElementById('email')) {
-    const password = document.createElement('input');
-    password.type = 'password';
-    password.id = 'password';
-    password.placeholder = 'كلمة المرور';
-    password.style.cssText = 'width:100%;padding:12px;margin:10px 0;border:1px solid #bfcbd5;border-radius:9px;font:inherit';
-    document.getElementById('email').after(password);
-    const btn = document.querySelector('#admin-status button');
-    if (btn) btn.textContent = 'دخول لوحة الإدارة';
-  }
-};
-login = async function() {
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  if (email.toLowerCase() !== 'fadihalghamdy07@gmail.com') {
-    status('البريد غير مخصص للإدارة');
-    return;
-  }
-  const {error} = await db.auth.signInWithPassword({email,password});
-  if (error) {
-    status('تعذر الدخول: تأكدي من البريد وكلمة المرور');
-    return;
-  }
-  await showAdmin();
-};
+let db,questions=[],rows=[],adminRole=null,reportReady=false;
+try{if(!window.supabase)throw Error('تعذر تحميل مكتبة الاتصال');db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){$('form').textContent='تعذر تشغيل الاستبيان. تحققي من الاتصال بالإنترنت.'}
+function status(message){$('admin-status').textContent=message}
+function el(tag,text,cls){const e=document.createElement(tag);if(text!==undefined)e.textContent=String(text);if(cls)e.className=cls;return e}
+function answer(q,r){return r?.answers?.['q'+q.sort_order]}
+function selectedCount(v,option){return Array.isArray(v)?v.includes(option):v===option}
+function formatDate(d){if(!d)return '—';const x=new Date(d);return isNaN(x)?'—':x.toLocaleString('ar-SA')}
+function renderSurvey(){const form=$('form');form.replaceChildren();questions.filter(q=>q.active).forEach((q,i)=>{const d=el('div',undefined,'card');d.append(el('div',(i+1)+'. '+q.question_text,'q'));if(q.question_type==='text'){const t=el('textarea');t.name='q'+q.id;t.placeholder='إجابتك (اختياري)';d.append(t)}else(q.options||[]).forEach(a=>{const l=el('label',undefined,'choice'),inp=el('input');inp.type=(q.sort_order===8||q.sort_order===9)?'checkbox':'radio';inp.name='q'+q.id;inp.value=a;l.append(inp,document.createTextNode(' '+a));d.append(l)});form.append(d)});const end=el('div',undefined,'card');end.append(el('p','المشاركة دون اسم أو بريد إلكتروني.','muted'));const btn=el('button','إرسال الإجابة');btn.type='submit';btn.id='send';end.append(btn);form.append(end)}
+async function loadQuestions(){if(!db)return;const {data,error}=await db.from('mustaqbalhum_questions').select('*').order('sort_order');if(error){$('form').textContent='تعذر تحميل الأسئلة: '+error.message;return}questions=data||[];renderSurvey()}
+$('form').addEventListener('submit',async e=>{e.preventDefault();if(!db)return;const answers={};for(const q of questions.filter(x=>x.active)){if(q.question_type==='text'){answers['q'+q.sort_order]=$('form').querySelector('[name="q'+q.id+'"]').value.trim().slice(0,3000)}else{const selected=[...$('form').querySelectorAll('[name="q'+q.id+'"]:checked')].map(x=>x.value);if(!selected.length){alert('يرجى الإجابة عن السؤال: '+q.question_text);return}answers['q'+q.sort_order]=(q.sort_order===8||q.sort_order===9)?selected:selected[0]}}const btn=$('send');btn.disabled=true;btn.textContent='جارٍ الإرسال...';const {error}=await db.from('mustaqbalhum_responses').insert({answers});btn.disabled=false;btn.textContent='إرسال الإجابة';if(error){alert('تعذر الإرسال، يرجى المحاولة مجددًا.');return}$('form').style.display='none';$('success').style.display='block';window.scrollTo(0,0)});
+function showSurvey(){$('admin').style.display='none';$('survey').style.display='block';$('print-report').classList.add('hide')}
+async function showAdmin(){$('survey').style.display='none';$('admin').style.display='block';$('admin-content').classList.add('hide');adminRole=null;status('جارٍ التحقق من الصلاحيات...');if(!db){status('تعذر الاتصال بقاعدة البيانات');return}const {data:{user},error}=await db.auth.getUser();if(error||!user){showLogin();return}const {data:a,error:roleError}=await db.from('mustaqbalhum38_admins').select('role').eq('user_id',user.id).maybeSingle();if(roleError||!a){status('تم تسجيل الدخول، لكن الحساب غير مفعل في جدول صلاحيات الإدارة.');return}adminRole=a.role;status('تم تسجيل الدخول كإدارة المنصة · '+user.email);$('admin-content').classList.remove('hide');$('editor-panel').classList.toggle('hide',adminRole!=='owner');await loadResults();if(adminRole==='owner')renderEditor()}
+function showLogin(){const s=$('admin-status');s.replaceChildren(el('p','تسجيل الدخول للإدارة فقط'));const email=el('input');email.type='email';email.id='email';email.placeholder='البريد الإلكتروني';email.autocomplete='username';const password=el('input');password.type='password';password.id='password';password.placeholder='كلمة المرور';password.autocomplete='current-password';const btn=el('button','دخول لوحة الإدارة');btn.onclick=login;s.append(email,password,btn)}
+async function login(){const email=$('email')?.value.trim()||'',password=$('password')?.value||'';if(email.toLowerCase()!==ADMIN_EMAIL){alert('هذا البريد غير مخصص للإدارة');return}if(!password){alert('أدخلي كلمة المرور');return}status('جارٍ تسجيل الدخول...');const {error}=await db.auth.signInWithPassword({email,password});if(error){showLogin();$('admin-status').prepend(el('p','تعذر الدخول: تأكدي من البريد وكلمة المرور','error'));return}await showAdmin()}
 async function logout(){await db.auth.signOut();adminRole=null;showSurvey()}
-async function loadResults(){let {data,error}=await db.from('mustaqbalhum_responses').select('created_at,answers').order('created_at',{ascending:false}).limit(10000);if(error){status('تعذر تحميل النتائج: '+error.message);return}rows=data||[];$('count').textContent=rows.length;let root=$('results');root.replaceChildren();questions.forEach(q=>{let card=document.createElement('div');card.className='card';let h=document.createElement('h3');h.textContent=q.sort_order+'. '+q.question_text;card.append(h);if(q.question_type==='text'){let values=rows.map(r=>r.answers['q'+q.sort_order]).filter(Boolean);if(!values.length)card.append(document.createTextNode('لا توجد إجابات بعد'));values.forEach(v=>{let p=document.createElement('p');p.className='result-row';p.textContent='• '+v;card.append(p)})}else(q.options||[]).forEach(a=>{let n=rows.filter(r=>{let v=r.answers['q'+q.sort_order];return Array.isArray(v)?v.includes(a):v===a}).length;let pct=rows.length?Math.round(100*n/rows.length):0;let label=document.createElement('div');label.textContent=a+': '+n+' ('+pct+'%)';let bar=document.createElement('div');bar.className='bar';let fill=document.createElement('div');fill.className='fill';fill.style.width=pct+'%';bar.append(fill);card.append(label,bar)});root.append(card)})}
-function renderEditor(){let e=$('editor');e.replaceChildren();let h=document.createElement('h3');h.textContent='تعديل أسئلة الاستبيان';e.append(h);questions.forEach(q=>{let d=document.createElement('div');d.className='card';let label=document.createElement('label');label.textContent='السؤال '+q.sort_order;let input=document.createElement('textarea');input.value=q.question_text;input.style.height='70px';let ol=document.createElement('label');ol.textContent='الخيارات (كل خيار في سطر)';let opts=document.createElement('textarea');opts.value=(q.options||[]).join('\n');opts.disabled=q.question_type==='text';let btn=document.createElement('button');btn.textContent='حفظ التعديل';btn.onclick=async()=>{let {error}=await db.from('mustaqbalhum38_questions').update({prompt:input.value.trim(),options:q.question_type==='text'?[]:opts.value.split('\n').map(x=>x.trim()).filter(Boolean)}).eq('id',q.id);alert(error?'تعذر الحفظ: '+error.message:'تم حفظ التعديل');if(!error){await loadQuestions();renderEditor()}};d.append(label,input,ol,opts,btn);e.append(d)})}
-function exportCSV(){if(!adminRole)return;let cols=['التاريخ',...questions.map(q=>q.question_text)];let quote=x=>'"'+String(x??'').replaceAll('"','""')+'"';let lines=[cols.map(quote).join(',')];rows.forEach(r=>lines.push([r.created_at,...questions.map(q=>{let v=r.answers['q'+q.sort_order];return Array.isArray(v)?v.join(' | '):v})].map(quote).join(',')));let blob=new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='نتائج_مستقبلهم_38.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-  db.auth.onAuthStateChange(async (event) => {
-  if (event === 'PASSWORD_RECOVERY') {
-    const newPassword = prompt('أدخلي كلمة المرور الجديدة (12 خانة على الأقل):');
-    if (!newPassword) return;
-    if (newPassword.length < 12) {
-      alert('كلمة المرور قصيرة. استخدمي 12 خانة على الأقل.');
-      return;
-    }
-    const { error } = await db.auth.updateUser({
-      password: newPassword
-    });
-    if (error) {
-      alert('تعذر تغيير كلمة المرور: ' + error.message);
-    } else {
-      alert('تم تغيير كلمة المرور بنجاح');
-      await db.auth.signOut();
-      location.href = location.pathname;
-    }
-  }
-});
-
-function makeReport() {
-  if (!adminRole) {
-    alert('يرجى دخول لوحة الإدارة أولاً');
-    return;
-  }
-
-  const old = document.getElementById('official-report');
-  if (old) old.remove();
-
-  const report = document.createElement('section');
-  report.id = 'official-report';
-
-  const css = document.createElement('style');
-  css.id = 'official-report-style';
-  css.textContent = `
-    #official-report {
-      background:white; color:#20354e;
-      padding:25px; direction:rtl;
-      font-family:Tahoma,Arial,sans-serif;
-    }
-    #official-report h1,#official-report h2 {
-      color:#173c62;
-    }
-    #official-report .report-card {
-      border:1px solid #d8c28b;
-      border-radius:12px; padding:18px;
-      margin:18px 0; break-inside:avoid;
-    }
-    #official-report .report-bar {
-      background:#e8eef3; height:18px;
-      border-radius:9px; overflow:hidden;
-      margin:7px 0 15px;
-    }
-    #official-report .report-fill {
-      background:#b69a58; height:100%;
-    }
-    @media print {
-      body > *:not(#official-report) {
-        display:none !important;
-      }
-      #official-report {
-        position:static; padding:10px;
-      }
-      #official-report .report-fill {
-        print-color-adjust:exact;
-        -webkit-print-color-adjust:exact;
-      }
-      @page { size:A4; margin:12mm; }
-    }
-  `;
-  document.getElementById('official-report-style')?.remove();
-  document.head.append(css);
-
-  const add = (parent, tag, value) => {
-    const e = document.createElement(tag);
-    e.textContent = value;
-    parent.append(e);
-    return e;
-  };
-
-  add(report,'h1','التقرير البياني والتحليلي');
-  add(report,'h2','استبيان مستقبلهم 38');
-  add(report,'p','المتوسطة الثامنة والثلاثون');
-  add(report,'p','مديرة المدرسة: نوال سعيد الأحمري');
-  add(report,'p','إعداد: فاديه الغامدي');
-  add(report,'h2','الملخص التنفيذي');
-  add(report,'p','إجمالي المشاركات: '+rows.length);
-  add(report,'p','تاريخ التقرير: '+new Date().toLocaleDateString('ar-SA'));
-
-  questions.forEach(q => {
-    const card = document.createElement('div');
-    card.className = 'report-card';
-    add(card,'h3',q.sort_order+'. '+q.question_text);
-
-    if(q.question_type === 'text') {
-      const answers = rows.map(r =>
-        r.answers?.['q'+q.sort_order]
-      ).filter(Boolean);
-
-      add(card,'p','عدد الإجابات النصية: '+answers.length);
-      answers.forEach(a => add(card,'p','• '+a));
-    } else {
-      const stats = (q.options||[]).map(option => {
-        const count = rows.filter(r => {
-          const v = r.answers?.['q'+q.sort_order];
-          return Array.isArray(v)
-            ? v.includes(option)
-            : v === option;
-        }).length;
-        return {option,count};
-      });
-
-      stats.forEach(s => {
-        const pct = rows.length
-          ? Math.round(s.count/rows.length*100)
-          : 0;
-
-        add(card,'p',
-          s.option+' — '+s.count+' مشاركة ('+pct+'٪)'
-        );
-
-        const bar = document.createElement('div');
-        bar.className = 'report-bar';
-        const fill = document.createElement('div');
-        fill.className = 'report-fill';
-        fill.style.width = pct+'%';
-        bar.append(fill);
-        card.append(bar);
-      });
-
-      if(rows.length && stats.length) {
-        const top = [...stats].sort(
-          (a,b) => b.count-a.count
-        )[0];
-
-        add(card,'p',
-          'التحليل: الخيار الأكثر اختيارًا هو «'+
-          top.option+'» بعدد '+top.count+
-          ' مشاركة. وتُفسَّر النتيجة في ضوء طبيعة السؤال.'
-        );
-      }
-    }
-    report.append(card);
-  });
-
-  const end = document.createElement('div');
-  end.className = 'report-card';
-  add(end,'h2','التوصيات التطويرية');
-  add(end,'p','تعزيز التواصل مع أولياء الأمور.');
-  add(end,'p','تقديم مواد تعريفية بخدمات تطبيق مستقبلهم.');
-  add(end,'p','متابعة مؤشرات الاستبيان دوريًا.');
-  add(end,'p','تحديد أولويات التحسين وفق النتائج الفعلية.');
-  report.append(end);
-
-  document.body.append(report);
-  window.print();
-
-}
-
-const reportButton = document.createElement('button');
-reportButton.textContent = '📊 التقرير البياني والتحليلي PDF';
-reportButton.onclick = makeReport;
-document.querySelector('#count').parentElement.append(reportButton);
-  
-loadQuestions();if(location.hash.includes('access_token'))showAdmin();
+async function loadResults(){if(!adminRole)return;status('جارٍ تحميل النتائج...');let all=[],from=0,limit=1000;while(true){const {data,error}=await db.from('mustaqbalhum_responses').select('created_at,answers').order('created_at',{ascending:false}).range(from,from+limit-1);if(error){status('تعذر تحميل النتائج: '+error.message);return}all.push(...(data||[]));if(!data||data.length<limit)break;from+=limit;if(from>=50000){status('تم تحميل أول 50,000 مشاركة فقط.');break}}rows=all;reportReady=false;$('count').textContent=rows.length.toLocaleString('ar-SA');$('question-count').textContent=questions.length.toLocaleString('ar-SA');$('last-date').textContent=formatDate(rows[0]?.created_at);renderResults();if(from<50000)status('تم تحميل النتائج بنجاح · '+rows.length+' مشاركة')}
+function statsFor(q){return(q.options||[]).map(option=>({option,count:rows.filter(r=>selectedCount(answer(q,r),option)).length}))}
+function addChart(card,q){const stats=statsFor(q);stats.forEach(s=>{const pct=rows.length?100*s.count/rows.length:0;const line=el('div',undefined,'chart-row');line.append(el('div',s.option));const track=el('div',undefined,'track'),fill=el('div',undefined,'fill');fill.style.width=pct+'%';track.append(fill);line.append(track,el('strong',s.count+' ('+pct.toFixed(1)+'٪)'));card.append(line)});if(rows.length&&stats.length){const top=[...stats].sort((a,b)=>b.count-a.count);const ties=top.filter(s=>s.count===top[0].count).map(s=>s.option);const note=ties.length===1?'الخيار الأكثر اختيارًا: «'+ties[0]+'» بعدد '+top[0].count+' مشاركة.':'تعادل في أعلى الاختيارات: '+ties.join('، ')+'.';card.append(el('p',note+' النسب محسوبة من إجمالي المشاركات.','insight'))}}
+function renderResults(){const root=$('results');root.replaceChildren();root.append(el('h2','الرسوم البيانية ونتائج الأسئلة'));if(!rows.length)root.append(el('p','لا توجد مشاركات مسجلة حتى الآن.','muted'));questions.forEach(q=>{const card=el('article',undefined,'card report-question');card.append(el('h3',q.sort_order+'. '+q.question_text));if(q.question_type==='text'){const vals=rows.map(r=>answer(q,r)).filter(v=>typeof v==='string'&&v.trim());card.append(el('p','عدد الإجابات النصية: '+vals.length,'muted'));vals.forEach(v=>card.append(el('div',v,'text-answer')))}else addChart(card,q);root.append(card)})}
+function renderEditor(){if(adminRole!=='owner')return;const root=$('editor');root.replaceChildren();root.append(el('p','تُحدَّث الأسئلة في الجدول نفسه الذي يستخدمه الاستبيان. لا تغيّري ترتيب السؤال إذا كانت هناك إجابات سابقة.','muted'));questions.forEach(q=>{const d=el('div',undefined,'editor-item');d.append(el('strong','السؤال '+q.sort_order));const input=el('textarea');input.value=q.question_text;const opts=el('textarea');opts.value=(q.options||[]).join('\n');opts.disabled=q.question_type==='text';const btn=el('button','حفظ التعديل');btn.onclick=async()=>{if(!input.value.trim()){alert('نص السؤال مطلوب');return}btn.disabled=true;const update={question_text:input.value.trim(),options:q.question_type==='text'?[]:opts.value.split('\n').map(x=>x.trim()).filter(Boolean)};const {error}=await db.from('mustaqbalhum_questions').update(update).eq('id',q.id);btn.disabled=false;if(error){alert('تعذر الحفظ: '+error.message);return}alert('تم حفظ التعديل');await loadQuestions();renderEditor();await loadResults()};d.append(input,el('p','الخيارات (خيار في كل سطر)','muted'),opts,btn);root.append(d)})}
+function exportCSV(){if(!adminRole)return alert('سجلي الدخول أولاً');const cols=['التاريخ',...questions.map(q=>q.question_text)];const quote=x=>'"'+String(x??'').replaceAll('"','""')+'"';const lines=[cols.map(quote).join(',')];rows.forEach(r=>lines.push([r.created_at,...questions.map(q=>{const v=answer(q,r);return Array.isArray(v)?v.join(' | '):v})].map(quote).join(',')));const blob=new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download='نتائج_مستقبلهم_38.csv';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000)}
+function makeReport(){if(!adminRole)return alert('سجلي الدخول أولاً');const root=$('print-report');root.replaceChildren();const head=el('div',undefined,'report-title');head.append(el('div','المملكة العربية السعودية · المتوسطة الثامنة والثلاثون'),el('h2','التقرير البياني والتحليلي لاستبيان «مستقبلهم»'),el('p','مديرة المدرسة: نوال سعيد الأحمري · إعداد المعلمة: فاديه الغامدي'),el('p','تاريخ إعداد التقرير: '+formatDate(new Date())));root.append(head);const summary=el('div',undefined,'card');summary.append(el('h2','الملخص التنفيذي'),el('p','إجمالي المشاركات المحمّلة: '+rows.length),el('p','عدد الأسئلة: '+questions.length),el('p','يعرض التقرير توزيع الإجابات والنسب المئوية وأبرز الاختيارات، دون افتراض دلالات لا تثبتها البيانات.'));root.append(summary);questions.forEach(q=>{const card=el('article',undefined,'card report-question');card.append(el('h3',q.sort_order+'. '+q.question_text));if(q.question_type==='text'){const vals=rows.map(r=>answer(q,r)).filter(v=>typeof v==='string'&&v.trim());card.append(el('p','عدد الإجابات النصية: '+vals.length));vals.forEach(v=>card.append(el('div',v,'text-answer')))}else addChart(card,q);root.append(card)});const end=el('div',undefined,'card');end.append(el('h2','التوصيات التطويرية'),el('p','١. تعزيز التواصل مع أولياء الأمور والتعريف بخدمات تطبيق «مستقبلهم». '),el('p','٢. إعداد مواد إرشادية للأسئلة التي تظهر نتائجها حاجة إلى التوضيح.'),el('p','٣. إعادة قياس الأثر بعد تنفيذ البرامج التوعوية ومقارنة النتائج.'),el('p','٤. الاستفادة من التعليقات النصية عند وضع خطة التحسين.'));root.append(end);reportReady=true;alert('تم إعداد التقرير. اضغطي «حفظ التقرير PDF / طباعة» لحفظه.');return root}
+function printReport(){if(!adminRole)return alert('سجلي الدخول أولاً');if(!reportReady)makeReport();setTimeout(()=>window.print(),150)}
+if(db){db.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY')setTimeout(async()=>{const p=prompt('أدخلي كلمة مرور جديدة (12 خانة على الأقل)');if(!p)return;if(p.length<12)return alert('كلمة المرور قصيرة');const {error}=await db.auth.updateUser({password:p});alert(error?'تعذر تغيير كلمة المرور: '+error.message:'تم تغيير كلمة المرور');if(!error)await db.auth.signOut()},0)});loadQuestions();if(location.hash.includes('access_token'))showAdmin()}
 </script></body></html>
